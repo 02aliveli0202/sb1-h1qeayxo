@@ -24,9 +24,31 @@ const CategoryManager = () => {
   });
 
   useEffect(() => {
+    // Initialize sample categories if not exists
+    const initializeSampleCategories = () => {
+      return [
+        { id: 1, name: 'Elektronik', slug: 'elektronik', parent_id: null, level: 0, productCount: 2 },
+        { id: 2, name: 'Giyim', slug: 'giyim', parent_id: null, level: 0, productCount: 2 },
+        { id: 3, name: 'Ev & Yaşam', slug: 'ev-yasam', parent_id: null, level: 0, productCount: 0 },
+        { id: 4, name: 'Spor', slug: 'spor', parent_id: null, level: 0, productCount: 1 },
+        { id: 5, name: 'Telefon & Aksesuarlar', slug: 'telefon-aksesuarlar', parent_id: 1, level: 1, productCount: 1 },
+        { id: 6, name: 'Bilgisayar', slug: 'bilgisayar', parent_id: 1, level: 1, productCount: 1 },
+        { id: 7, name: 'Erkek Giyim', slug: 'erkek-giyim', parent_id: 2, level: 1, productCount: 1 },
+        { id: 8, name: 'Kadın Giyim', slug: 'kadin-giyim', parent_id: 2, level: 1, productCount: 1 }
+      ];
+    };
+
     const storedCategories = JSON.parse(localStorage.getItem('categories') || '[]');
-    setFlatCategories(storedCategories);
-    setCategories(buildCategoryTree(storedCategories));
+    
+    if (storedCategories.length === 0) {
+      const sampleCategories = initializeSampleCategories();
+      localStorage.setItem('categories', JSON.stringify(sampleCategories));
+      setFlatCategories(sampleCategories);
+      setCategories(buildCategoryTree(sampleCategories));
+    } else {
+      setFlatCategories(storedCategories);
+      setCategories(buildCategoryTree(storedCategories));
+    }
   }, []);
 
   const buildCategoryTree = (flatCategories: Category[]): Category[] => {

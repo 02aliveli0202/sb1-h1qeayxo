@@ -13,11 +13,123 @@ const Products = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Initialize sample data if not exists
+    const initializeSampleData = () => {
+      // Sample categories
+      const sampleCategories = [
+        { id: 1, name: 'Elektronik', slug: 'elektronik', parent_id: null, level: 0 },
+        { id: 2, name: 'Giyim', slug: 'giyim', parent_id: null, level: 0 },
+        { id: 3, name: 'Ev & Yaşam', slug: 'ev-yasam', parent_id: null, level: 0 },
+        { id: 4, name: 'Spor', slug: 'spor', parent_id: null, level: 0 },
+        { id: 5, name: 'Telefon & Aksesuarlar', slug: 'telefon-aksesuarlar', parent_id: 1, level: 1 },
+        { id: 6, name: 'Bilgisayar', slug: 'bilgisayar', parent_id: 1, level: 1 },
+        { id: 7, name: 'Erkek Giyim', slug: 'erkek-giyim', parent_id: 2, level: 1 },
+        { id: 8, name: 'Kadın Giyim', slug: 'kadin-giyim', parent_id: 2, level: 1 }
+      ];
+
+      // Sample products
+      const sampleProducts = [
+        {
+          id: 1,
+          name: 'iPhone 15 Pro',
+          description: 'Apple iPhone 15 Pro 128GB',
+          price: 45000,
+          discountPercentage: 10,
+          categoryId: 5,
+          imageUrl: 'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=500&h=500&fit=crop',
+          featured: true,
+          rating_avg: 4.8,
+          rating_count: 245,
+          created_at: new Date().toISOString()
+        },
+        {
+          id: 2,
+          name: 'MacBook Air M2',
+          description: 'Apple MacBook Air 13" M2 Chip 256GB',
+          price: 35000,
+          discountPercentage: 5,
+          categoryId: 6,
+          imageUrl: 'https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=500&h=500&fit=crop',
+          featured: true,
+          rating_avg: 4.9,
+          rating_count: 189,
+          created_at: new Date().toISOString()
+        },
+        {
+          id: 3,
+          name: 'Nike Air Max',
+          description: 'Nike Air Max 270 Erkek Spor Ayakkabı',
+          price: 2500,
+          discountPercentage: 20,
+          categoryId: 4,
+          imageUrl: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&h=500&fit=crop',
+          featured: false,
+          rating_avg: 4.5,
+          rating_count: 156,
+          created_at: new Date().toISOString()
+        },
+        {
+          id: 4,
+          name: 'Erkek Gömlek',
+          description: 'Klasik Beyaz Erkek Gömlek',
+          price: 299,
+          discountPercentage: 15,
+          categoryId: 7,
+          imageUrl: 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=500&h=500&fit=crop',
+          featured: false,
+          rating_avg: 4.3,
+          rating_count: 89,
+          created_at: new Date().toISOString()
+        },
+        {
+          id: 5,
+          name: 'Kadın Elbise',
+          description: 'Şık Kadın Elbise',
+          price: 450,
+          discountPercentage: 25,
+          categoryId: 8,
+          imageUrl: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=500&h=500&fit=crop',
+          featured: true,
+          rating_avg: 4.6,
+          rating_count: 134,
+          created_at: new Date().toISOString()
+        }
+      ];
+
+      return { sampleCategories, sampleProducts };
+    };
+
     const storedCategories = JSON.parse(localStorage.getItem('categories') || '[]');
     const storedProducts = JSON.parse(localStorage.getItem('products') || '[]');
     
-    // Build hierarchical category structure for display
-    const buildCategoryTree = (flatCategories) => {
+    // If no data exists, initialize with sample data
+    if (storedCategories.length === 0 || storedProducts.length === 0) {
+      const { sampleCategories, sampleProducts } = initializeSampleData();
+      
+      if (storedCategories.length === 0) {
+        localStorage.setItem('categories', JSON.stringify(sampleCategories));
+        setCategories(buildCategoryTree(sampleCategories));
+      } else {
+        setCategories(buildCategoryTree(storedCategories));
+      }
+      
+      if (storedProducts.length === 0) {
+        localStorage.setItem('products', JSON.stringify(sampleProducts));
+        setProducts(sampleProducts);
+      } else {
+        setProducts(storedProducts);
+      }
+    } else {
+      setCategories(buildCategoryTree(storedCategories));
+      setProducts(storedProducts);
+    }
+    
+    const token = localStorage.getItem('token');
+    setIsAuthenticated(!!token);
+  }, []);
+
+  // Build hierarchical category structure for display
+  const buildCategoryTree = (flatCategories) => {
       const categoryMap = new Map();
       const rootCategories = [];
 
@@ -38,14 +150,7 @@ const Products = () => {
       });
 
       return rootCategories;
-    };
-
-    setCategories(buildCategoryTree(storedCategories));
-    setProducts(storedProducts);
-
-    const token = localStorage.getItem('token');
-    setIsAuthenticated(!!token);
-  }, []);
+  };
 
   const filteredProducts = products
     .filter(product => {

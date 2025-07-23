@@ -9,10 +9,86 @@ const FeaturedProducts = () => {
   const navigate = useNavigate();
   
   useEffect(() => {
-    const storedProducts = JSON.parse(localStorage.getItem('products') || '[]');
-    const featuredProducts = storedProducts.filter(product => product.featured);
-    setProducts(featuredProducts);
+    // Initialize sample products if not exists
+    const initializeSampleProducts = () => {
+      return [
+        {
+          id: 1,
+          name: 'iPhone 15 Pro',
+          description: 'Apple iPhone 15 Pro 128GB',
+          price: 45000,
+          discountPercentage: 10,
+          categoryId: 5,
+          imageUrl: 'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=500&h=500&fit=crop',
+          featured: true,
+          rating_avg: 4.8,
+          rating_count: 245
+        },
+        {
+          id: 2,
+          name: 'MacBook Air M2',
+          description: 'Apple MacBook Air 13" M2 Chip 256GB',
+          price: 35000,
+          discountPercentage: 5,
+          categoryId: 6,
+          imageUrl: 'https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=500&h=500&fit=crop',
+          featured: true,
+          rating_avg: 4.9,
+          rating_count: 189
+        },
+        {
+          id: 5,
+          name: 'Şık Kadın Elbise',
+          description: 'Şık ve modern kadın elbise',
+          price: 450,
+          discountPercentage: 25,
+          categoryId: 8,
+          imageUrl: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=500&h=500&fit=crop',
+          featured: true,
+          rating_avg: 4.6,
+          rating_count: 134
+        }
+      ];
+    };
 
+    const storedProducts = JSON.parse(localStorage.getItem('products') || '[]');
+    
+    if (storedProducts.length === 0) {
+      const sampleProducts = initializeSampleProducts();
+      // Store all sample products (including non-featured ones)
+      const allSampleProducts = [
+        ...sampleProducts,
+        {
+          id: 3,
+          name: 'Nike Air Max 270',
+          description: 'Nike Air Max 270 Erkek Spor Ayakkabı',
+          price: 2500,
+          discountPercentage: 20,
+          categoryId: 4,
+          imageUrl: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&h=500&fit=crop',
+          featured: false,
+          rating_avg: 4.5,
+          rating_count: 156
+        },
+        {
+          id: 4,
+          name: 'Klasik Beyaz Erkek Gömlek',
+          description: 'Klasik kesim beyaz erkek gömlek',
+          price: 299,
+          discountPercentage: 15,
+          categoryId: 7,
+          imageUrl: 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=500&h=500&fit=crop',
+          featured: false,
+          rating_avg: 4.3,
+          rating_count: 89
+        }
+      ];
+      localStorage.setItem('products', JSON.stringify(allSampleProducts));
+      setProducts(sampleProducts); // Only featured products for this component
+    } else {
+      const featuredProducts = storedProducts.filter(product => product.featured);
+      setProducts(featuredProducts);
+    }
     const token = localStorage.getItem('token');
     setIsAuthenticated(!!token);
 
