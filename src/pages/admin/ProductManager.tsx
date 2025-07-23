@@ -42,10 +42,153 @@ const ProductManager = () => {
   const [tempPdfUrl, setTempPdfUrl] = useState('');
 
   useEffect(() => {
+    // Initialize sample data if not exists
+    const initializeSampleData = () => {
+      const sampleCategories = [
+        { id: 1, name: 'Elektronik', slug: 'elektronik' },
+        { id: 2, name: 'Giyim', slug: 'giyim' },
+        { id: 3, name: 'Ev & Yaşam', slug: 'ev-yasam' },
+        { id: 4, name: 'Spor', slug: 'spor' },
+        { id: 5, name: 'Telefon & Aksesuarlar', slug: 'telefon-aksesuarlar' },
+        { id: 6, name: 'Bilgisayar', slug: 'bilgisayar' },
+        { id: 7, name: 'Erkek Giyim', slug: 'erkek-giyim' },
+        { id: 8, name: 'Kadın Giyim', slug: 'kadin-giyim' }
+      ];
+
+      const sampleProducts = [
+        {
+          id: 1,
+          name: 'iPhone 15 Pro',
+          slug: 'iphone-15-pro',
+          description: 'Apple iPhone 15 Pro 128GB - En son teknoloji ile donatılmış premium akıllı telefon',
+          shortDescription: 'Apple iPhone 15 Pro 128GB',
+          price: 45000,
+          discountPercentage: 10,
+          categoryId: 5,
+          imageUrl: 'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=500&h=500&fit=crop',
+          additionalImages: [
+            'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=500&h=500&fit=crop',
+            'https://images.unsplash.com/photo-1580910051074-3eb694886505?w=500&h=500&fit=crop'
+          ],
+          videoUrls: [],
+          pdfUrls: [],
+          featured: true,
+          stockQuantity: 50,
+          sku: 'IPH-15-PRO-128',
+          ratingAvg: 4.8,
+          ratingCount: 245
+        },
+        {
+          id: 2,
+          name: 'MacBook Air M2',
+          slug: 'macbook-air-m2',
+          description: 'Apple MacBook Air 13" M2 Chip 256GB - Güçlü performans ve uzun pil ömrü',
+          shortDescription: 'Apple MacBook Air 13" M2 Chip 256GB',
+          price: 35000,
+          discountPercentage: 5,
+          categoryId: 6,
+          imageUrl: 'https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=500&h=500&fit=crop',
+          additionalImages: [
+            'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=500&h=500&fit=crop'
+          ],
+          videoUrls: [],
+          pdfUrls: [],
+          featured: true,
+          stockQuantity: 25,
+          sku: 'MBA-M2-256',
+          ratingAvg: 4.9,
+          ratingCount: 189
+        },
+        {
+          id: 3,
+          name: 'Nike Air Max 270',
+          slug: 'nike-air-max-270',
+          description: 'Nike Air Max 270 Erkek Spor Ayakkabı - Konfor ve stil bir arada',
+          shortDescription: 'Nike Air Max 270 Erkek Spor Ayakkabı',
+          price: 2500,
+          discountPercentage: 20,
+          categoryId: 4,
+          imageUrl: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&h=500&fit=crop',
+          additionalImages: [
+            'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=500&h=500&fit=crop'
+          ],
+          videoUrls: [],
+          pdfUrls: [],
+          featured: false,
+          stockQuantity: 100,
+          sku: 'NIKE-AM270',
+          ratingAvg: 4.5,
+          ratingCount: 156
+        },
+        {
+          id: 4,
+          name: 'Klasik Beyaz Erkek Gömlek',
+          slug: 'klasik-beyaz-erkek-gomlek',
+          description: 'Klasik kesim beyaz erkek gömlek - İş ve günlük kullanım için ideal',
+          shortDescription: 'Klasik Beyaz Erkek Gömlek',
+          price: 299,
+          discountPercentage: 15,
+          categoryId: 7,
+          imageUrl: 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=500&h=500&fit=crop',
+          additionalImages: [],
+          videoUrls: [],
+          pdfUrls: [],
+          featured: false,
+          stockQuantity: 75,
+          sku: 'GOMLEK-BEYAZ',
+          ratingAvg: 4.3,
+          ratingCount: 89
+        },
+        {
+          id: 5,
+          name: 'Şık Kadın Elbise',
+          slug: 'sik-kadin-elbise',
+          description: 'Şık ve modern kadın elbise - Özel günler için mükemmel',
+          shortDescription: 'Şık Kadın Elbise',
+          price: 450,
+          discountPercentage: 25,
+          categoryId: 8,
+          imageUrl: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=500&h=500&fit=crop',
+          additionalImages: [
+            'https://images.unsplash.com/photo-1566479179817-c0b5b4b4b1e5?w=500&h=500&fit=crop'
+          ],
+          videoUrls: [],
+          pdfUrls: [],
+          featured: true,
+          stockQuantity: 30,
+          sku: 'ELBISE-SIK',
+          ratingAvg: 4.6,
+          ratingCount: 134
+        }
+      ];
+
+      return { sampleCategories, sampleProducts };
+    };
+
     const storedProducts = JSON.parse(localStorage.getItem('products') || '[]');
     const storedCategories = JSON.parse(localStorage.getItem('categories') || '[]');
-    setProducts(storedProducts);
-    setCategories(storedCategories);
+    
+    // Initialize sample data if not exists
+    if (storedCategories.length === 0 || storedProducts.length === 0) {
+      const { sampleCategories, sampleProducts } = initializeSampleData();
+      
+      if (storedCategories.length === 0) {
+        localStorage.setItem('categories', JSON.stringify(sampleCategories));
+        setCategories(sampleCategories);
+      } else {
+        setCategories(storedCategories);
+      }
+      
+      if (storedProducts.length === 0) {
+        localStorage.setItem('products', JSON.stringify(sampleProducts));
+        setProducts(sampleProducts);
+      } else {
+        setProducts(storedProducts);
+      }
+    } else {
+      setProducts(storedProducts);
+      setCategories(storedCategories);
+    }
   }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
