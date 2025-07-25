@@ -55,16 +55,36 @@ const useAuth = () => {
 
       if (error) {
         console.error('Error fetching user profile:', error);
-        // If user doesn't exist in users table, create a basic user object
+        // If user doesn't exist in users table, create one
         const { data: authUser } = await supabase.auth.getUser();
         if (authUser.user) {
-          setUser({
-            id: authUser.user.id,
-            username: authUser.user.email?.split('@')[0] || 'user',
-            email: authUser.user.email || '',
-            role: 'user',
-            created_at: new Date().toISOString()
-          });
+          // Try to create user profile
+          const { data: newUser, error: createError } = await supabase
+            .from('users')
+            .insert([
+              {
+                id: authUser.user.id,
+                email: authUser.user.email || '',
+                username: authUser.user.email?.split('@')[0] || 'user',
+                role: 'user',
+              },
+            ])
+            .select()
+            .single();
+
+          if (createError) {
+            console.error('Error creating user profile:', createError);
+            // Fallback to basic user object
+            setUser({
+              id: authUser.user.id,
+              username: authUser.user.email?.split('@')[0] || 'user',
+              email: authUser.user.email || '',
+              role: 'user',
+              created_at: new Date().toISOString()
+            });
+          } else {
+            setUser(newUser);
+          }
         }
       } else {
         setUser(data);

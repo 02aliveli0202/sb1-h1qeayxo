@@ -100,8 +100,8 @@ const Login = () => {
         
         <div className="mt-6 p-4 bg-blue-50 rounded-lg">
           <h3 className="text-sm font-medium text-blue-800 mb-2">Test Admin Hesabı:</h3>
-          <p className="text-sm text-blue-600">E-posta: admin@test.com</p>
-          <p className="text-sm text-blue-600">Şifre: admin123</p>
+          <p className="text-sm text-blue-600">E-posta: mhmt02@gmail.com</p>
+          <p className="text-sm text-blue-600">Şifre: Esat0241</p>
         </div>
       </div>
     </div>
